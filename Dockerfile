@@ -19,7 +19,7 @@ WORKDIR /home/etherpad/CTFPad/
 RUN openssl genrsa -out key.pem 4096
 RUN openssl req -new -nodes -key key.pem -out csr.pem -subj "/C=US/ST=Some-State/L=Springfield/O=Internet Widgits Pty Ltd/CN=etherpad"
 RUN openssl x509 -req -days 3650 -in csr.pem -signkey key.pem -out cert.pem
-RUN config.json.example config.json
+RUN mv config.json.example config.json
 RUN sqlite3 ctfpad.sqlite < ctfpad.sql
 RUN mkdir uploads
 
