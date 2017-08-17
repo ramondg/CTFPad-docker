@@ -16,14 +16,14 @@ RUN npm install
 WORKDIR /home/etherpad/CTFPad/etherpad-lite/
 RUN mv settings.json.template settings.json
 WORKDIR /home/etherpad/CTFPad/
-RUN openssl genrsa -out key.pem 4096
-RUN openssl req -new -nodes -key key.pem -out csr.pem -subj "/C=US/ST=Some-State/L=Springfield/O=Internet Widgits Pty Ltd/CN=etherpad"
-RUN openssl x509 -req -days 3650 -in csr.pem -signkey key.pem -out cert.pem
-RUN rm csr.pem
+RUN if [ ! -f key.pem ]; then openssl genrsa -out key.pem 4096; fi
+RUN if [ ! -f cert.pem ]; then openssl req -new -nodes -key key.pem -out csr.pem -subj "/C=US/ST=Some-State/L=Springfield/O=Internet Widgits Pty Ltd/CN=etherpad"; fi
+RUN if [ ! -f cert.pem ]; then openssl x509 -req -days 3650 -in csr.pem -signkey key.pem -out cert.pem; fi
 RUN mv config.json.example config.json
-RUN sqlite3 ctfpad.sqlite < ctfpad.sql
+RUN if [ ! -f ctfpad.sqlite ]; then sqlite3 ctfpad.sqlite < ctfpad.sql; fi
 RUN mkdir uploads
 
 EXPOSE 1234
 EXPOSE 1235
 ENTRYPOINT ["/usr/local/bin/node", "/home/etherpad/CTFPad/main.js"] 
+
