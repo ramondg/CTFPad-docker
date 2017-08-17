@@ -14,13 +14,13 @@ WORKDIR /home/etherpad/CTFPad/
 RUN git clone https://github.com/ether/etherpad-lite.git
 RUN npm install
 WORKDIR /home/etherpad/CTFPad/etherpad-lite/
-RUN if [ ! -f settings.json ]; then mv settings.json.template settings.json; fi
+RUN mv settings.json.template settings.json
 WORKDIR /home/etherpad/CTFPad/
-RUN if [ ! -f key.pem ]; then openssl genrsa -out key.pem 4096; fi
-RUN if [ ! -f cert.pem ]; then openssl req -new -nodes -key key.pem -out csr.pem -subj "/C=US/ST=Some-State/L=Springfield/O=Internet Widgits Pty Ltd/CN=etherpad"; fi
-RUN if [ ! -f cert.pem ]; then openssl x509 -req -days 3650 -in csr.pem -signkey key.pem -out cert.pem; fi
-RUN if [ ! -f config.json ]; then mv config.json.example config.json; fi
-RUN if [ ! -f ctfpad.sqlite ]; then sqlite3 ctfpad.sqlite < ctfpad.sql; fi
+RUN openssl genrsa -out key.pem 4096
+RUN openssl req -new -nodes -key key.pem -out csr.pem -subj "/C=US/ST=Some-State/L=Springfield/O=Internet Widgits Pty Ltd/CN=etherpad"
+RUN openssl x509 -req -days 3650 -in csr.pem -signkey key.pem -out cert.pem
+RUN config.json.example config.json
+RUN sqlite3 ctfpad.sqlite < ctfpad.sql
 RUN mkdir uploads
 
 EXPOSE 1234
